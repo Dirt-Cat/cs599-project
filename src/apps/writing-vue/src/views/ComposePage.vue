@@ -495,7 +495,7 @@ async function loadTopics(type = taskType.value) {
       filters.category = category
     }
 
-    const result = await topicsApi.list(filters, { page: 1, limit: 500 })
+    const result = await topicsApi.list(filters, { page: 1, limit: 200 })
     if (!topicsRequestGate.isCurrent(requestId)) {
       return
     }

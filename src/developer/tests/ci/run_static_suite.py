@@ -720,12 +720,13 @@ def _run_json_subprocess(
 ) -> Tuple[bool, Any]:
     try:
         completed = subprocess.run(
-            command,
+            command if sys.platform != "win32" else " ".join(command),
             check=True,
             capture_output=True,
             text=True,
             timeout=timeout,
             env=env,
+            shell=(sys.platform == "win32"),
         )
     except subprocess.TimeoutExpired:
         return False, f"执行超时（{timeout}秒）"
@@ -756,12 +757,13 @@ def _run_json_subprocess(
 def _run_command(command: List[str], timeout: int) -> Tuple[bool, str]:
     try:
         completed = subprocess.run(
-            command,
+            command if sys.platform != "win32" else " ".join(command),
             check=True,
             capture_output=True,
             text=True,
             timeout=timeout,
             cwd=REPO_ROOT,
+            shell=(sys.platform == "win32"),
         )
     except subprocess.TimeoutExpired:
         return False, f"执行超时（{timeout}秒）"
@@ -1151,6 +1153,8 @@ def run_checks() -> Tuple[List[dict], bool]:
                 check=True,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                shell=(sys.platform == "win32"),
             )
         except subprocess.CalledProcessError as exc:
             sanitizer_passed = False

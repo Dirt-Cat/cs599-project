@@ -3,13 +3,13 @@
 
 const assert = require('assert');
 const path = require('path');
-const { execFileSync } = require('child_process');
+const { execSync } = require('child_process');
 
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
 const serverDistRoot = path.join(repoRoot, 'server', 'dist');
 
 function ensureServerBundle() {
-  execFileSync('npm', ['run', 'build:server'], {
+  execSync('npm run build:server', {
     cwd: repoRoot,
     stdio: 'inherit'
   });

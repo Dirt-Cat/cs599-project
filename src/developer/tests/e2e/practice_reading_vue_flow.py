@@ -59,6 +59,7 @@ def ensure_bundle() -> None:
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
+        shell=True,
     )
     if completed.returncode != 0:
         detail = completed.stdout or completed.stderr or "unknown build failure"

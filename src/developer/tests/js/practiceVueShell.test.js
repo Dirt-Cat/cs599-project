@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename)
 const repoRoot = path.resolve(__dirname, '..', '..', '..')
 
 function read(relativePath) {
-    return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')
+    return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8').replace(/\r\n/g, '\n')
 }
 
 function assertContains(source, snippet, label) {
@@ -339,7 +339,7 @@ function testPracticeLibraryView() {
     assertContains(source, 'window.open(', 'reading PDF entry opens actual PDF window')
     assertContains(source, 'function hasReadingPracticePayload(asset)', 'reading asset payload availability helper')
     assertContains(source, 'if (!hasReadingPracticePayload(asset) && getPdfPath(asset))', 'PDF-only reading assets open PDF instead of empty Vue reading page')
-    assertContains(source, '&& hasReadingPracticePayload(asset)\n    && (normalizedCategory === \'all\'', 'random reading practice filters out PDF-only assets')
+    assertContains(source, '    && hasReadingPracticePayload(asset)\n    && (normalizedCategory === \'all\'', 'random reading practice filters out PDF-only assets')
     assertContains(source, 'function startEndlessMode()', 'endless reading practice entry exists')
     assertContains(source, 'hasReadingPracticePayload(asset)', 'endless/random reading practice filters out PDF-only assets')
     assertContains(source, 'metadata.script', 'reading payload helper reuses existing script metadata')

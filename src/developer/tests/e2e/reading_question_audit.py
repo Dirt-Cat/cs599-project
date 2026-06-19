@@ -16,6 +16,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
+# Force UTF-8 output on Windows to avoid GBK encoding errors with emoji
+if sys.platform == "win32":
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
 INDEX_PATH = REPO_ROOT / "index.html"
 INDEX_URL = f"{INDEX_PATH.as_uri()}?test_env=1"
@@ -48,8 +54,7 @@ except ModuleNotFoundError:
             cwd=str(REPO_ROOT),
         )
         raise SystemExit(completed.returncode)
-    print("Playwright Python 未安装且无法切换到 .venv，审计无法执行。", file=sys.stderr)
-    raise SystemExit(EXIT_ERROR)
+    raise SystemExit(json.dumps({"status": "fail", "detail": "playwright_python_missing"}, ensure_ascii=False))
 
 
 def log_step(message: str, level: str = "INFO") -> None:

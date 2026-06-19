@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
-import { execFileSync } from 'node:child_process'
+import { execSync } from 'node:child_process'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -11,7 +11,7 @@ const repoRoot = path.resolve(__dirname, '..', '..', '..')
 const require = createRequire(import.meta.url)
 
 function ensureServerBundle() {
-    execFileSync('npm', ['run', 'build:server'], {
+    execSync('npm run build:server', {
         cwd: repoRoot,
         stdio: 'inherit'
     })

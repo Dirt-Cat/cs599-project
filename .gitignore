@@ -59,6 +59,18 @@ pnpm-debug.log*
 .env.*.local
 !.env.example
 
+# Python 虚拟环境和缓存
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pylibs/
+
+# 测试结果产物
+test_results.json
+
 # 系统文件
 .DS_Store
 Thumbs.db

@@ -4,6 +4,8 @@
 
 基于 AI Agent 的 IELTS（雅思）智能练习桌面应用，集成阅读、听力、写作练习功能，并通过 LLM 提供智能评估与反馈。
 
+本项目借鉴了开源项目 [IELTS-practice](https://github.com/sallowayma-git/IELTS-practice)。
+
 ## 方向
 
 方向一：Agentic AI 原生开发

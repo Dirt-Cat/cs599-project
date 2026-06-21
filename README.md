@@ -2,7 +2,7 @@
 
 ## 项目简介
 
-本项目是一个基于 AI Agent 的 IELTS（雅思）智能练习系统，集成了阅读、听力、写作练习功能，并通过 LLM 提供智能评估和反馈。
+基于 AI Agent 的 IELTS（雅思）智能练习桌面应用，集成阅读、听力、写作练习功能，并通过 LLM 提供智能评估与反馈。
 
 ## 方向
 
@@ -13,36 +13,35 @@
 - AI IDE: Trae CN
 - LLM: DeepSeek API
 - 框架: LangGraph
-- 前端框架: Vue 3 + Vite
-- 桌面应用: Electron
+- 前端: Vue 3 + Vite
+- 桌面: Electron
+- 后端: Fastify
 - 数据库: SQLite (better-sqlite3)
 - 容器: Docker
 
 ## 目录结构
 
 ```
-cs599-project/
-├── docs/                    # 项目文档
-│   ├── CS599_大作业报告.pdf   # 最终提交的报告（PDF）
-│   └── architecture.md       # 详细架构说明
-├── src/                      # 项目源代码
-│   ├── electron/             # Electron 主进程
-│   │   ├── main.js           # 主进程入口
-│   │   ├── preload.js        # 预加载脚本
-│   │   ├── services/         # 后端服务（LLM、评估等）
-│   │   └── db/               # 数据库访问层
-│   ├── apps/
-│   │   └── writing-vue/      # Vue 写作应用
-│   ├── assets/               # 静态资源
-│   ├── js/                   # 前端 JavaScript
-│   ├── css/                  # 样式文件
-│   ├── ListeningPractice/    # 听力练习题库
-│   ├── developer/            # 开发者文档和测试
-│   ├── package.json          # 项目配置
-│   └── index.html            # 渲染进程入口
-├── README.md                 # 项目入口
-├── .gitignore                # 排除编译文件
-└── LICENSE                   # 开源协议 (GPL v3)
+src/
+├── electron/                 # Electron 主进程：窗口管理、IPC 桥梁、安全存储
+│   ├── main.js               # 主进程入口，创建窗口、启动 Fastify 服务器
+│   ├── preload.js            # 预加载脚本，暴露 electronAPI 给渲染进程
+│   ├── services/             # 核心服务：LLM 编排、API 配置管理、评估服务
+│   └── db/                   # SQLite 数据库访问层
+├── server/                   # Fastify 后端 API 服务器（端口 3000）
+│   └── src/
+│       ├── routes/           # 路由模块：management、practice、reading、writing
+│       └── lib/              # 业务逻辑：LLM 编排、阅读教练、提示词管理
+├── apps/
+│   └── writing-vue/          # Vue 3 写作练习 SPA（AI 评分 + 题库管理 + 设置）
+├── js/                       # 主壳渲染进程脚本（总览、题库浏览、练习记录）
+├── css/                      # 主壳样式
+├── assets/                   # 静态资源（题库数据、词汇表、图片）
+├── templates/                # HTML 模板（考试占位、题目类型定义）
+├── report-agent/             # LangGraph 报告生成 Agent（Python）
+├── ListeningPractice/        # 听力练习题库（HTML 音频播放页面）
+├── developer/                # 开发文档与测试（E2E、单元测试、CI 脚本）
+└── index.html                # 渲染进程入口（主壳页面 + 导航）
 ```
 
 ## 环境搭建
@@ -52,26 +51,38 @@ cs599-project/
 ```bash
 cd src
 npm install
-npm run prepare:writing
+npm --prefix apps/writing-vue install --no-fund --no-audit
 ```
 
 ### 2. 环境变量配置
 
-⚠️ **不硬编码 API Key**
+**⚠️ 不硬编码 API Key**
 
-复制 `src/.env.example` 为 `src/.env` 并填写 API Key：
+复制环境变量模板并填写 API Key：
+
+```bash
+cp src/report-agent/.env.example src/report-agent/.env
+```
+
+编辑 `src/report-agent/.env`：
 
 ```env
 DEEPSEEK_API_KEY=your_api_key_here
 ```
 
-或在 Electron 设置页面配置 LLM 提供者。
+或者启动后在写作练习的「更多工具 → 写作评分 → 设置 → API 配置」界面中添加 LLM 提供者（Provider: DeepSeek / OpenAI / OpenRouter），API Key 会通过 Electron `safeStorage` 加密存入 SQLite。
 
 ### 3. 启动步骤
 
 ```bash
 cd src
 npm run start
+```
+
+等价于依次执行：构建服务端 → 构建 Vue 写作应用 → 启动 Electron。如需快速重启（已构建过）：
+
+```bash
+npm run start:electron
 ```
 
 ## 项目状态

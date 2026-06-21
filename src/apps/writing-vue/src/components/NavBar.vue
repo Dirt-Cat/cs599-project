@@ -1,7 +1,7 @@
 <template>
   <nav class="nav-shell glass-toolbar">
     <div class="nav-inner">
-      <router-link to="/writing" class="brand-block">
+      <router-link to="/library" class="brand-block">
         <strong class="brand-title">📚 考试总览系统</strong>
         <span class="brand-subtitle">Practice Shell</span>
       </router-link>
@@ -24,6 +24,7 @@
 
 <script setup>
 const navItems = [
+  { to: '/library', label: '练习库' },
   { to: '/writing', label: '写作' },
   { to: '/topics', label: '写作题库' },
   { to: '/history', label: '写作记录' },
